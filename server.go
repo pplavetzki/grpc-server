@@ -34,6 +34,7 @@ import (
 	"log"
 	"math"
 	"net"
+	"os"
 	"sync"
 	"time"
 
@@ -56,6 +57,7 @@ var (
 )
 
 var exampleData = []byte(``)
+var podIP string
 
 type routeGuideServer struct {
 	pb.UnimplementedRouteGuideServer
@@ -67,6 +69,7 @@ type routeGuideServer struct {
 
 // GetFeature returns the feature at the given point.
 func (s *routeGuideServer) GetFeature(ctx context.Context, point *pb.Point) (*pb.Feature, error) {
+	fmt.Printf("Handling request GetFeature from pod ip: %s\n", podIP)
 	for _, feature := range s.savedFeatures {
 		if proto.Equal(feature.Location, point) {
 			return feature, nil
@@ -78,6 +81,7 @@ func (s *routeGuideServer) GetFeature(ctx context.Context, point *pb.Point) (*pb
 
 // ListFeatures lists all features contained within the given bounding Rectangle.
 func (s *routeGuideServer) ListFeatures(rect *pb.Rectangle, stream pb.RouteGuide_ListFeaturesServer) error {
+	fmt.Printf("Handling request ListFeatures from pod ip: %s\n", podIP)
 	for _, feature := range s.savedFeatures {
 		if inRange(feature.Location, rect) {
 			if err := stream.Send(feature); err != nil {
@@ -94,6 +98,7 @@ func (s *routeGuideServer) ListFeatures(rect *pb.Rectangle, stream pb.RouteGuide
 // number of points,  number of known features visited, total distance traveled, and
 // total time spent.
 func (s *routeGuideServer) RecordRoute(stream pb.RouteGuide_RecordRouteServer) error {
+	fmt.Printf("Handling request RecordRoute from pod ip: %s\n", podIP)
 	var pointCount, featureCount, distance int32
 	var lastPoint *pb.Point
 	startTime := time.Now()
@@ -127,6 +132,7 @@ func (s *routeGuideServer) RecordRoute(stream pb.RouteGuide_RecordRouteServer) e
 // RouteChat receives a stream of message/location pairs, and responds with a stream of all
 // previous messages at each of those locations.
 func (s *routeGuideServer) RouteChat(stream pb.RouteGuide_RouteChatServer) error {
+	fmt.Printf("Handling request RouteChat from pod ip: %s\n", podIP)
 	for {
 		in, err := stream.Recv()
 		if err == io.EOF {
@@ -224,7 +230,12 @@ func newServer() *routeGuideServer {
 func main() {
 	flag.Parse()
 	lis, err := net.Listen("tcp", fmt.Sprintf("localhost:%d", *port))
-	log.Printf("Listening wisely at localhost:%d", *port)
+
+	podIP = os.Getenv("POD_IP")
+	if podIP == "" {
+		podIP = "127.0.0.1"
+	}
+	log.Printf("Listening wisely at %s:%d", podIP, *port)
 
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)

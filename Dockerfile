@@ -20,10 +20,11 @@ RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o server
 #second stage
 FROM alpine:latest as executable
 COPY --from=builder /app/grpc-server/server /app/
+COPY --from=builder /app/grpc-server/testdata/ /app/testdata/
 WORKDIR /app/
 
 ENTRYPOINT ["/app/server"]
-CMD ["--json_db_file", "route_guide_db.json"]
+CMD ["--json_db_file", "./testdata/route_guide_db.json"]
 
 EXPOSE 10000
 

@@ -53,7 +53,7 @@ service RouteGuide {
   // A Bidirectional streaming RPC.
   //
   // Accepts a stream of requests
-  rpc SayHello(stream HelloRequest) returns (stream HelloResponse) {}
+  rpc SayHello(HelloRequest) returns (HelloResponse) {}
 }
 
 // Points are represented as latitude-longitude pairs in the E7 representation

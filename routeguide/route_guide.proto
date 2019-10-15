@@ -49,6 +49,11 @@ service RouteGuide {
   // Accepts a stream of RouteNotes sent while a route is being traversed,
   // while receiving other RouteNotes (e.g. from other users).
   rpc RouteChat(stream RouteNote) returns (stream RouteNote) {}
+
+  // A Bidirectional streaming RPC.
+  //
+  // Accepts a stream of requests
+  rpc SayHello(stream HelloRequest) returns (stream HelloResponse) {}
 }
 
 // Points are represented as latitude-longitude pairs in the E7 representation
@@ -107,4 +112,16 @@ message RouteSummary {
 
   // The duration of the traversal in seconds.
   int32 elapsed_time = 4;
+}
+
+// HelloRequest simple input of message
+message HelloRequest {
+  // message the message received
+  string message = 1;
+}
+
+// HelloResponse simple input of message
+message HelloResponse {
+  // message the message received
+  string message = 1;
 }

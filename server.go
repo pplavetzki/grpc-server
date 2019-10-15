@@ -160,6 +160,23 @@ func (s *routeGuideServer) RouteChat(stream pb.RouteGuide_RouteChatServer) error
 	}
 }
 
+// SayHello simple echoes the message with ip address
+func (s *routeGuideServer) SayHello(stream pb.RouteGuide_SayHelloServer) error {
+	for {
+		in, err := stream.Recv()
+		if err == io.EOF {
+			return nil
+		}
+		if err != nil {
+			return err
+		}
+		mess := fmt.Sprintf(in.Message+"(Backend IP: %s", podIP)
+		if err := stream.Send(&pb.HelloResponse{Message: mess}); err != nil {
+			return err
+		}
+	}
+}
+
 // loadFeatures loads features from a JSON file.
 func (s *routeGuideServer) loadFeatures(filePath string) {
 	var data []byte
@@ -229,7 +246,7 @@ func newServer() *routeGuideServer {
 
 func main() {
 	flag.Parse()
-	lis, err := net.Listen("tcp", fmt.Sprintf("localhost:%d", *port))
+	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", *port))
 
 	podIP = os.Getenv("POD_IP")
 	if podIP == "" {

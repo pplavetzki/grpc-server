@@ -12,4 +12,4 @@ jobs:
         with:
           fetch-depth: 1
       - name: Run Makefile
-        run: make test
+        run: make build-image

@@ -1,6 +1,7 @@
 ACR    = ${AZURE}
 NAME   = ${ACR}.azurecr.io/grpc-server
-TAG    = $(shell git rev-parse HEAD)
+# TAG    = $(shell git rev-parse HEAD)
+TAG    := $(shell date +"%Y%m%d.${GITHUB_RUN_NUMBER}")
 IMG    = ${NAME}:${TAG}
 LATEST = ${NAME}:latest
 SUB = ${SUBSCRIPTION}

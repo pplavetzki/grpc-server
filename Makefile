@@ -41,7 +41,7 @@ set-sub:
 
 .PHONY: login
 login:
-	az acr login --name ${ACR} -u ${ACR} -p ${ACR_PSWD}
+	az acr login --name ${ACR} -u ${SP_APP_ID} -p ${SP_PASSWORD}
 
 .PHONY: push
 push:

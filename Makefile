@@ -1,5 +1,6 @@
 ACR    = ${AZURE}
-NAME   = ${ACR}.azurecr.io/grpc-server
+ENV    := dev
+NAME   = ${ACR}.azurecr.io/${ENV}/grpc-server
 # TAG    = $(shell git rev-parse HEAD)
 TAG    := $(shell date +"%Y%m%d.${GITHUB_RUN_NUMBER}")
 IMG    = ${NAME}:${TAG}
@@ -47,3 +48,8 @@ login:
 push:
 	docker push ${IMG}
 	docker push ${LATEST}
+
+.PHONY: release
+release:
+	docker build -t ${NAME}:${GITHUB_REF} --target=executable .
+	docker push ${NAME}:${GITHUB_REF}

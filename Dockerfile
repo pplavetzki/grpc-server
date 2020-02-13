@@ -1,5 +1,5 @@
 #first stage - builder
-FROM golang:1.13.1-stretch as setup
+FROM golang:1.13.6-stretch as setup
 
 ENV GO111MODULE=on
 WORKDIR /app/grpc-server

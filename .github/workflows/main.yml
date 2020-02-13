@@ -2,6 +2,9 @@ name: CI
 
 on: [push]
 
+env:
+  AZURE: pplavetzki.azurecr.io 
+
 jobs:
   build:
 

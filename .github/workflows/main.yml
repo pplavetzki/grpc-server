@@ -4,7 +4,7 @@ on: [push]
 
 env:
   AZURE: pplavetzki.azurecr.io
-  SP_PASSWORD: {{ secret.SP_PASSWORD }}
+  SP_PASSWORD: ${{ secret.SP_PASSWORD }}
   SP_APP_ID: 9bde9134-ec7a-41b1-9d16-a5ed9ec475cb
 
 jobs:
